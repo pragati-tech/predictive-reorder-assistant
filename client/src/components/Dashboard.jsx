@@ -102,7 +102,7 @@ export default function Dashboard() {
               {items.filter(i => i.currentStock < i.reorderLevel).map(i => (
                 <li key={i._id} className="flex justify-between items-center bg-red-200 dark:bg-red-800 px-3 py-2 rounded">
                   <span className="text-red-800 dark:text-white font-medium">{i.name} - Only {Math.ceil(i.currentStock)} left</span>
-                  <Link to="/inventory" className="bg-red-700 text-white px-2 py-1 text-sm rounded">Reorder</Link>
+                  <Link to="/add-item" className="bg-red-700 text-white px-2 py-1 text-sm rounded">Reorder</Link>
                 </li>
               ))}
             </ul>

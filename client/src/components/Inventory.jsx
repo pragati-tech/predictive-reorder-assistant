@@ -1,16 +1,35 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { Pencil, Trash2 } from 'lucide-react';
+import { Trash2 } from 'lucide-react';
 import Navbar from './Navbar';
+import toast, { Toaster } from 'react-hot-toast';
 
 export default function Inventory() {
   const [items, setItems] = useState([]);
   const [search, setSearch] = useState('');
 
   useEffect(() => {
-    axios.get('http://localhost:5000/api/items/list')
-      .then(res => setItems(res.data));
+    fetchItems();
   }, []);
+
+  const fetchItems = async () => {
+    const res = await axios.get('http://localhost:5000/api/items/list');
+    setItems(res.data);
+  };
+
+  const handleDelete = async (id) => {
+    const confirmDelete = window.confirm("Are you sure you want to delete this item?");
+    if (!confirmDelete) return;
+
+    try {
+      await axios.delete(`http://localhost:5000/api/items/${id}`);
+      toast.success("Item deleted successfully");
+      setItems(items.filter(i => i._id !== id));
+    } catch (err) {
+      console.error(err);
+      toast.error("Failed to delete item");
+    }
+  };
 
   const filteredItems = items.filter(i =>
     i.name.toLowerCase().includes(search.toLowerCase())
@@ -18,7 +37,8 @@ export default function Inventory() {
 
   return (
     <div className="max-w-6xl mx-auto p-6">
-        <Navbar/>
+      <Toaster />
+      <Navbar />
       <h2 className="text-3xl font-bold text-white mb-6">Inventory Management</h2>
 
       <div className="flex justify-end mb-4">
@@ -40,7 +60,6 @@ export default function Inventory() {
               <th className="px-6 py-3 font-semibold">Daily Usage</th>
               <th className="px-6 py-3 font-semibold">Days Left</th>
               <th className="px-6 py-3 font-semibold">Status</th>
-              <th className="px-6 py-3 font-semibold">Actions</th>
             </tr>
           </thead>
           <tbody>
@@ -61,19 +80,12 @@ export default function Inventory() {
                 <tr key={i._id} className="border-t hover:bg-gray-100 transition">
                   <td className="px-6 py-4">{i.name}</td>
                   <td className="px-6 py-4">{i.currentStock}</td>
-                  {/* <td className="px-6 py-4">{i.reorderLevel} / {i.maxStock || '—'}</td> */}
                   <td className="px-6 py-4">{i.averageUsage}</td>
-                  <td className="px-6 py-4">{daysLeft} days</td>    
+                  <td className="px-6 py-4">{daysLeft} days</td>
                   <td className="px-6 py-4">
-                    <span className={`px-3 py-1 rounded-full text-white text-sm font-medium ${statusColor}`}>{statusLabel}</span>
-                  </td>
-                  <td className="px-6 py-4 flex gap-2">
-                    <button className="bg-blue-500 hover:bg-blue-600 text-white p-2 rounded">
-                      <Pencil size={16} />
-                    </button>
-                    <button className="bg-red-500 hover:bg-red-600 text-white p-2 rounded">
-                      <Trash2 size={16} />
-                    </button>
+                    <span className={`px-3 py-1 rounded-full text-white text-sm font-medium ${statusColor}`}>
+                      {statusLabel}
+                    </span>
                   </td>
                 </tr>
               );

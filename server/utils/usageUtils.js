@@ -1,5 +1,5 @@
 const mongoose = require('mongoose');
-const UsageLog = require('../models/UsageLog'); // adjust path as needed
+const UsageLog = require('../models/UsageLog');
 
 async function calculateAverageDailyUsage(itemId, days = 30) {
   const startDate = new Date();
@@ -27,4 +27,3 @@ async function calculateAverageDailyUsage(itemId, days = 30) {
 }
 
 module.exports = { calculateAverageDailyUsage };
-    

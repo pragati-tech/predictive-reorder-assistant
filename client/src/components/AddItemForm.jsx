@@ -1,18 +1,38 @@
-import React, { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import toast, { Toaster } from 'react-hot-toast';
 
 export default function AddItemForm() {
   const navigate = useNavigate();
+  const location = useLocation();
+  const prefillData = location.state || {};
+  const isPrefilled = !!Object.keys(prefillData).length;
+
   const [form, setForm] = useState({
     name: '',
     currentStock: '',
+    averageDailyUsage: '',
     leadTimeDays: '',
     safetyStock: '',
     reorderLevel: '',
     lastReorderDate: ''
   });
+
+  useEffect(() => {
+    if (isPrefilled) {
+      console.log('Prefill data received:', prefillData);
+      setForm({
+        name: prefillData.name || '',
+        currentStock: prefillData.reorderQuantity || '',
+        averageDailyUsage: prefillData.averageUsage || '',
+        leadTimeDays: prefillData.leadTimeDays || '',
+        safetyStock: prefillData.safetyStock || '',
+        reorderLevel: prefillData.reorderLevel || '',
+        lastReorderDate: new Date().toISOString().split('T')[0]
+      });
+    }
+  }, []);
 
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
@@ -64,6 +84,19 @@ export default function AddItemForm() {
             onChange={handleChange}
             className="w-full p-2 rounded bg-gray-700 text-white"
             placeholder="e.g., 100"
+            required
+          />
+        </div>
+
+        <div>
+          <label className="block text-sm font-semibold mb-1 text-white">Average Daily Usage *</label>
+          <input
+            type="number"
+            name="averageDailyUsage"
+            value={form.averageDailyUsage}
+            onChange={handleChange}
+            className="w-full p-2 rounded bg-gray-700 text-white"
+            placeholder="e.g., 5"
             required
           />
         </div>

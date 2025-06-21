@@ -19,7 +19,7 @@ export default function Nav() {
         </NavLink>
 
         <NavLink
-          to="/add"
+          to="/add-item"
           className={({ isActive }) =>
             isActive
               ? 'text-blue-400 underline'
@@ -30,7 +30,7 @@ export default function Nav() {
         </NavLink>
 
         <NavLink
-          to="/log"
+          to="/log-usage"
           className={({ isActive }) =>
             isActive
               ? 'text-blue-400 underline'

@@ -4,10 +4,8 @@ const Item = require('../models/Item');
 const UsageLog = require('../models/UsageLog');
 const { calculateAverageDailyUsage } = require('../utils/usageUtils');
 
-// Middleware to parse JSON
 router.use(express.json());
 
-// ➕ Add a new item
 router.post('/add', async (req, res) => {
   try {
     const item = new Item(req.body);
@@ -19,7 +17,6 @@ router.post('/add', async (req, res) => {
   }
 });
 
-// ✏️ Log daily usage and update average
 router.post('/:id/usage', async (req, res) => {
   try {
     const { usedQuantity } = req.body;
@@ -41,7 +38,6 @@ router.post('/:id/usage', async (req, res) => {
   }
 });
 
-// 📦 Get all items with forecast & reorder suggestion
 router.get('/list', async (req, res) => {
   try {
     const items = await Item.find();
@@ -75,5 +71,7 @@ router.get('/list', async (req, res) => {
     res.status(500).json({ error: 'Failed to fetch inventory list' });
   }
 });
+
+
 
 module.exports = router;
